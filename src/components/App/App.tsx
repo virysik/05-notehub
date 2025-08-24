@@ -11,14 +11,17 @@ import { useState } from "react";
 import Pagination from "../Pagination/Pagination";
 import Modal from "../Modal/Modal";
 import NoteForm from "../NoteForm/NoteForm";
+import SearchBox from "../SearchBox/SearchBox";
+import { useDebounce } from "use-debounce";
 
 function App() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [query] = useState("");
+  const [query, setQuery] = useState("");
+  const [search] = useDebounce(query, 1000);
   const [openCreate, setOpenCreate] = useState(false);
   const { data, isSuccess } = useQuery({
-    queryKey: ["notes", currentPage],
-    queryFn: () => fetchNotes(query, currentPage, 12),
+    queryKey: ["notes", currentPage, search],
+    queryFn: () => fetchNotes(search, currentPage, 12),
     placeholderData: keepPreviousData,
   });
 
@@ -43,7 +46,7 @@ function App() {
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
-        {/* Компонент SearchBox */}
+        <SearchBox query={query} setQuery={setQuery} />
         {isSuccess && data.totalPages > 1 && (
           <Pagination
             totalPages={data.totalPages}
