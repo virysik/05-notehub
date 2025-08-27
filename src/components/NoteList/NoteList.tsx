@@ -3,10 +3,11 @@ import type { Note } from "../../types/note";
 import css from "./NoteList.module.css";
 
 interface NoteListProps {
+  pending: boolean;
   notes: Note[];
   onRemove: UseMutateFunction<Note, Error, string, unknown>;
 }
-export default function NoteList({ notes, onRemove }: NoteListProps) {
+export default function NoteList({ pending, notes, onRemove }: NoteListProps) {
   return (
     <ul className={css.list}>
       {notes.map((note) => (
@@ -15,7 +16,11 @@ export default function NoteList({ notes, onRemove }: NoteListProps) {
           <p className={css.content}>{note.content}</p>
           <div className={css.footer}>
             <span className={css.tag}>{note.tag}</span>
-            <button className={css.button} onClick={() => onRemove(note.id)}>
+            <button
+              className={css.button}
+              onClick={() => onRemove(note.id)}
+              disabled={pending}
+            >
               Delete
             </button>
           </div>

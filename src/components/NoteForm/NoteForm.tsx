@@ -17,10 +17,15 @@ const validationSchema = Yup.object().shape({
 });
 
 interface NoteFormProps {
+  pending: boolean;
   onClose: () => void;
   onSubmit: UseMutateFunction<Note, Error, CreateNoteData, unknown>;
 }
-export default function NoteForm({ onClose, onSubmit }: NoteFormProps) {
+export default function NoteForm({
+  pending,
+  onClose,
+  onSubmit,
+}: NoteFormProps) {
   const fieldId = useId();
   const initValues: CreateNoteData = { title: "", tag: "Todo", content: "" };
   const handleSubmit = (
@@ -93,7 +98,9 @@ export default function NoteForm({ onClose, onSubmit }: NoteFormProps) {
             <button
               type="submit"
               className={css.submitButton}
-              disabled={Boolean(errors.content || errors.tag || errors.title)}
+              disabled={
+                Boolean(errors.content || errors.tag || errors.title) || pending
+              }
             >
               Create note
             </button>
